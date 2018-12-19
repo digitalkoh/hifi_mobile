@@ -54,7 +54,7 @@ class Filter extends Component {
   render() {
     return (
       <div style={defaultStyle}>
-        <img/>
+        <img />
         <input type="text" onKeyUp={event => 
           this.props.onTextChange(event.target.value)} />
       </div>
@@ -67,7 +67,7 @@ class Playlist extends Component {
     let playlist = this.props.playlist
     return (
       <div style={{...defaultStyle, display: 'inline-block', width: '24%'}}>
-        <img/>
+        <img src={playlist.imageUrl} style={{width:"60px"}}/>
         <h3>{playlist.name}</h3>
         <ul>
           {playlist.songs.map(song =>
@@ -91,7 +91,28 @@ class App extends Component {
     let parsed = queryString.parse(window.location.search);
     let accessToken = parsed.access_token;
 
+    fetch('https://api.spotify.com/v1/me', {
+      headers: {'Authorization': 'Bearer ' + accessToken}
+    }).then(response => response.json())
+    .then(data => this.setState({
+      user: {
+        name: data.display_name
+      }
+    }))
+
+    fetch('https://api.spotify.com/v1/me/playlists', {
+      headers: {'Authorization': 'Bearer ' + accessToken}
+    }).then(response => response.json())
+    .then(data => this.setState({
+      playlists: data.items.map(item => ({
+          name: item.name, 
+          imageUrl: item.images[0].url,
+          songs: []
+        }))
+      }))
+
   }
+
   render() {
 
     let playlistToRender = 
@@ -110,16 +131,16 @@ class App extends Component {
               {this.state.user.name}'s Playlist
             </h1>
 
-                <PlaylistCounter playlists={playlistToRender} />
-                <HoursCounter playlists={playlistToRender} />
-                <Filter onTextChange={text => this.setState({filterString: text})} />
-                
-                {playlistToRender.map(playlist =>
-                  <Playlist playlist={playlist} />
-                )}
+              <PlaylistCounter playlists={playlistToRender} />
+              <HoursCounter playlists={playlistToRender} />
+              <Filter onTextChange={text => this.setState({filterString: text})} />
+              
+              {playlistToRender.map(playlist =>
+                <Playlist playlist={playlist} />
+              )}
 
           </div> : <h2 style={defaultStyle}>
-              <button onClick={()=> window.location = 'https://hifi-mobile.herokuapp.com/login'} style={{padding:'20px', fontSize:'20px', 'margin-top':'20px'}}>
+              <button onClick={()=> window.location = 'http://localhost:8888/login'} style={{padding:'20px', fontSize:'20px', marginTop:'20px'}}>
               Sign in with Spotify
               </button>
           </h2>
