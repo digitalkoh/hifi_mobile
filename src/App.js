@@ -119,7 +119,7 @@ class App extends Component {
                 )}
 
           </div> : <h2 style={defaultStyle}>
-              <button onClick={()=> window.location = 'http://localhost:8888/login'} style={{padding:'20px', fontSize:'20px', 'margin-top':'20px'}}>
+              <button onClick={()=> window.location = 'https://hifi-mobile.herokuapp.com/login'} style={{padding:'20px', fontSize:'20px', 'margin-top':'20px'}}>
               Sign in with Spotify
               </button>
           </h2>
